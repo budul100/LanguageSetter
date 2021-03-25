@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <AssemblyName>LanguageSetter</AssemblyName>
+    <AssemblyVersion>0.1.0</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <Version>$(AssemblyVersion)</Version>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <TargetFramework>net472</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <EnableComHosting>true</EnableComHosting>
+    <EnableRegFreeCom>true</EnableRegFreeCom>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <RegisterForComInterop>true</RegisterForComInterop>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Views\LanguageView\LanguageView.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="RibbonUI.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.2.3" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
+    <Exec Command="&quot;%25windir%25\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe&quot; /codebase &quot;$(TargetDir)\PrismTaskPanes.Host.dll&quot;" />
+  </Target>
+
+</Project>

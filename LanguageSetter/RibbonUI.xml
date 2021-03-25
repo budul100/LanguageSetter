@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<customUI
+  xmlns="http://schemas.microsoft.com/office/2006/01/customui"
+  onLoad="OnLoadRibbonUI">
+  <ribbon>
+    <tabs>
+      <tab
+        idMso="TabReview">
+        <group  id="LanguageSetterGroup" label="Language setter">
+          <toggleButton
+            id="LanguageSetterToggle"
+            size="large"
+            label="Set language"
+            imageMso="SetLanguage"
+            getEnabled="GetLanguageSetterExists"
+            getPressed="GetLanguageSetterPressed"
+            onAction="ClickLanguageSetterToggle" />
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
