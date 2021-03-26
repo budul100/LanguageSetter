@@ -17,7 +17,7 @@ namespace LanguageView.ViewModels
         private readonly static IEnumerable<CultureInfo> cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
 
         private readonly ILanguageSetter languageSetter;
-
+        private readonly ISettings settings;
         private Language activeLanguage;
         private Language selectedLanguage;
 
@@ -25,9 +25,10 @@ namespace LanguageView.ViewModels
 
         #region Public Constructors
 
-        public LanguageViewModel(ILanguageSetter languageSetter)
+        public LanguageViewModel(ILanguageSetter languageSetter, ISettings settings)
         {
             this.languageSetter = languageSetter;
+            this.settings = settings;
 
             languageSetter.OnLanguageUpdateEvent += OnLanguageUpdate;
 
@@ -55,7 +56,9 @@ namespace LanguageView.ViewModels
             }
         }
 
-        public ObservableCollection<Language> Languages { get; set; }
+        public ObservableCollection<Language> AllLanguages { get; set; }
+
+        public ObservableCollection<Language> LastLanguages { get; set; }
 
         public Language SelectedLanguage
         {
@@ -136,7 +139,7 @@ namespace LanguageView.ViewModels
             var languages = GetLanguages()
                 .OrderBy(l => l.Name).ToArray();
 
-            Languages = new ObservableCollection<Language>(languages);
+            AllLanguages = new ObservableCollection<Language>(languages);
         }
 
         private void SetPresentationLanguage()

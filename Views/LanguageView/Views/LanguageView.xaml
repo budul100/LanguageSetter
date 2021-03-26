@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:l="clr-namespace:LanguageView.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
     xmlns:viewmodels="clr-namespace:LanguageView.ViewModels"
@@ -18,39 +19,58 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="20" />
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
-        <TextBox
+        <DockPanel
             Grid.Row="0"
             Grid.ColumnSpan="2"
-            Margin="0,0,0,2"
-            IsReadOnly="True"
-            Text="{Binding ActiveLanguage.Name}" />
-        <ListBox
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            Margin="0,2,0,0"
-            ItemsSource="{Binding Languages}"
-            SelectedItem="{Binding SelectedLanguage}"
-            TextSearch.TextPath="Name">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding SetSlidesLanguageCommand}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <ListBox.InputBindings>
-                <KeyBinding Key="Return" Command="{Binding SetSlidesLanguageCommand}" />
-            </ListBox.InputBindings>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <TextBlock Text="{Binding Name}" />
-                    </WrapPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            LastChildFill="True">
+            <ListBox
+                Margin="0,2,0,0"
+                l:ListBoxHelper.AutoSizeItemCount="3"
+                DockPanel.Dock="Top"
+                ItemsSource="{Binding LastLanguages}"
+                SelectedItem="{Binding ActiveLanguage}"
+                TextSearch.TextPath="Name">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding SetSlidesLanguageCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Return" Command="{Binding SetSlidesLanguageCommand}" />
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Name}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <ListBox
+                Margin="0,2,0,0"
+                ItemsSource="{Binding AllLanguages}"
+                SelectedItem="{Binding SelectedLanguage}"
+                TextSearch.TextPath="Name">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding SetSlidesLanguageCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Return" Command="{Binding SetSlidesLanguageCommand}" />
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Name}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
         <Button
             Grid.Row="2"
             Grid.Column="0"

@@ -1,5 +1,6 @@
 ﻿#pragma warning disable CA1031 // Do not catch general exception types
 
+using Config.Net;
 using LanguageCommons.Interfaces;
 using NetOffice.Exceptions;
 using NetOffice.OfficeApi;
@@ -17,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace LanguageSetter
@@ -45,6 +48,7 @@ namespace LanguageSetter
 
         private const string AddInName = "LanguageSetter";
         private const string LanguageRegion = "LanguageRegion";
+        private const string SettingsFileName = "Settings.xml";
         private const string TaskPaneId = "LanguageSetter";
 
         private bool isDisposed;
@@ -55,7 +59,7 @@ namespace LanguageSetter
 
         public AddIn()
         {
-            OnStartupComplete += OnAddInStartupComplete;
+            OnStartupComplete += OnAddInStart;
         }
 
         #endregion Public Constructors
@@ -144,6 +148,11 @@ namespace LanguageSetter
             return this.TaskPaneVisible(TaskPaneId);
         }
 
+        public void InvalidateRibbonUI()
+        {
+            RibbonUI?.Invalidate();
+        }
+
         public void OnLoadRibbonUI(NetOffice.OfficeApi.Native.IRibbonUI ribbonUI)
         {
             base.CustomUI_OnLoad(ribbonUI);
@@ -162,6 +171,12 @@ namespace LanguageSetter
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterInstance<ILanguageSetter>(this);
+
+            var settingsPath = GetSettingsPath();
+            var settings = new ConfigurationBuilder<ISettings>()
+                .UseJsonFile(settingsPath).Build();
+
+            containerRegistry.RegisterInstance(settings);
         }
 
         public void SetPresentationLanguage(int languageId)
@@ -227,7 +242,7 @@ namespace LanguageSetter
                 isVisible: false);
         }
 
-        #endregion Public Methodsxxxxx
+        #endregion Public Methods
 
         #region Protected Methods
 
@@ -250,6 +265,16 @@ namespace LanguageSetter
         #endregion Protected Methods
 
         #region Private Methods
+
+        private static string GetSettingsPath()
+        {
+            var result = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                Assembly.GetExecutingAssembly().GetName().Name,
+                SettingsFileName);
+
+            return result;
+        }
 
         private static void SetShapeLanguage(NetOffice.PowerPointApi.Shape shape, int languageId)
         {
@@ -286,7 +311,7 @@ namespace LanguageSetter
             }
         }
 
-        private void OnAddInStartupComplete(ref Array custom)
+        private void OnAddInStart(ref Array custom)
         {
             Application.AfterNewPresentationEvent += OnPresentationNew;
             Application.AfterPresentationOpenEvent += OnPresentationOpen;
@@ -359,11 +384,6 @@ namespace LanguageSetter
                         languageId: languageId);
                 }
             }
-        }
-
-        public void InvalidateRibbonUI()
-        {
-            RibbonUI?.Invalidate();
         }
 
         #endregion Private Methods
