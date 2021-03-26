@@ -144,11 +144,6 @@ namespace LanguageSetter
             return this.TaskPaneVisible(TaskPaneId);
         }
 
-        public void InvalidateRibbonUI()
-        {
-            RibbonUI.Invalidate();
-        }
-
         public void OnLoadRibbonUI(NetOffice.OfficeApi.Native.IRibbonUI ribbonUI)
         {
             base.CustomUI_OnLoad(ribbonUI);
@@ -232,7 +227,7 @@ namespace LanguageSetter
                 isVisible: false);
         }
 
-        #endregion Public Methods
+        #endregion Public Methodsxxxxx
 
         #region Protected Methods
 
@@ -303,14 +298,10 @@ namespace LanguageSetter
             this.SetTaskPaneVisible(
                 id: TaskPaneId,
                 isVisible: false);
-
-            InvalidateRibbonUI();
         }
 
         private void OnPresentationNew(Presentation pres)
         {
-            InvalidateRibbonUI();
-
             OnLanguageUpdateEvent?.Invoke(
                 sender: this,
                 e: default);
@@ -318,8 +309,6 @@ namespace LanguageSetter
 
         private void OnPresentationOpen(Presentation pres)
         {
-            InvalidateRibbonUI();
-
             OnLanguageUpdateEvent?.Invoke(
                 sender: this,
                 e: default);
@@ -370,6 +359,11 @@ namespace LanguageSetter
                         languageId: languageId);
                 }
             }
+        }
+
+        public void InvalidateRibbonUI()
+        {
+            RibbonUI?.Invalidate();
         }
 
         #endregion Private Methods

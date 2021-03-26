@@ -2,6 +2,7 @@
 using LanguageSetterApp.Views;
 using Prism.Ioc;
 using Prism.Modularity;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -13,6 +14,7 @@ namespace LanguageSetterApp
     public partial class App
         : ILanguageSetter
     {
+        public event EventHandler OnLanguageUpdateEvent;
         #region Public Methods
 
         public IEnumerable<int> GetAppLangIds()
