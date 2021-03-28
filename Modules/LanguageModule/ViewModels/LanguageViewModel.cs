@@ -22,6 +22,7 @@ namespace LanguageModule.ViewModels
         private readonly ILanguageSettings settings;
 
         private Language activeLanguage;
+        private bool allActivated;
         private Language selectedLanguage;
 
         #endregion Private Fields
@@ -34,6 +35,9 @@ namespace LanguageModule.ViewModels
             this.settings = settings;
 
             languageSetter.OnGivenUpdateEvent += OnLanguageUpdate;
+
+            ActivateLastsCommand = new DelegateCommand(ActivateLasts);
+            ActivateAllCommand = new DelegateCommand(ActivateAll);
 
             SetSlidesLanguageCommand = new DelegateCommand(SetSlidesLanguage);
             SetPresentationLanguageCommand = new DelegateCommand(SetPresentationLanguage);
@@ -48,6 +52,10 @@ namespace LanguageModule.ViewModels
         #endregion Public Constructors
 
         #region Public Properties
+
+        public DelegateCommand ActivateAllCommand { get; }
+
+        public DelegateCommand ActivateLastsCommand { get; }
 
         public Language ActiveLanguage
         {
@@ -94,18 +102,28 @@ namespace LanguageModule.ViewModels
 
         #region Private Methods
 
-        private IEnumerable<string> GetLastLanguages()
+        private void ActivateAll()
         {
-            yield return SelectedLanguage.Id.ToString();
+            allActivated = true;
+        }
+
+        private void ActivateLasts()
+        {
+            allActivated = false;
+        }
+
+        private IEnumerable<string> GetLastLanguages(Language currentLanguage)
+        {
+            yield return currentLanguage.Id.ToString();
 
             if (settings.LastLanguages?.Any() ?? false)
             {
                 var listInd = 1;
                 foreach (var language in settings.LastLanguages)
                 {
-                    if (listInd > settings.LastsSize) yield break;
+                    if (listInd >= settings.LastsSize) yield break;
 
-                    if (language != SelectedLanguage.Id.ToString())
+                    if (language != currentLanguage.Id.ToString())
                     {
                         yield return language;
                         listInd++;
@@ -135,9 +153,13 @@ namespace LanguageModule.ViewModels
             SetSelectedLanguage();
         }
 
-        private void SetActiveLanguage()
+        private void SetActiveLanguage(bool takeSelectedLanguage)
         {
-            settings.LastLanguages = GetLastLanguages().ToArray();
+            var currentLanguage = takeSelectedLanguage
+                ? SelectedLanguage
+                : ActiveLanguage;
+
+            settings.LastLanguages = GetLastLanguages(currentLanguage).ToArray();
 
             var languages = languageFactory.Get(
                 languageIds: settings.LastLanguages,
@@ -146,12 +168,13 @@ namespace LanguageModule.ViewModels
             LastLanguages.Clear();
             LastLanguages.AddRange(languages);
 
-            ActiveLanguage = SelectedLanguage;
+            ActiveLanguage = currentLanguage;
+            RaisePropertyChanged(nameof(ActiveLanguage));
         }
 
         private void SetPresentationLanguage()
         {
-            SetActiveLanguage();
+            SetActiveLanguage(allActivated);
 
             if (ActiveLanguage != default)
             {
@@ -164,12 +187,12 @@ namespace LanguageModule.ViewModels
             var languageId = languageSetter.GetCurrentLangId();
             SelectedLanguage = languageFactory.Get(languageId);
 
-            SetActiveLanguage();
+            SetActiveLanguage(true);
         }
 
         private void SetSlidesLanguage()
         {
-            SetActiveLanguage();
+            SetActiveLanguage(allActivated);
 
             if (ActiveLanguage != default)
             {

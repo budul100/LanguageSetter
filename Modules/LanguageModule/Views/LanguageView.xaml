@@ -13,6 +13,41 @@
     d:DesignWidth="200"
     prism:ViewModelLocator.AutoWireViewModel="True"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border
+                            x:Name="Bd"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true">
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1F26A0DA" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#a826A0Da" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#3D26A0DA" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#FF26A0DA" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Bd" Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -31,9 +66,12 @@
                 h:ListBoxHelper.AutoSizeItemCount="{Binding LastLanguagesSize}"
                 DockPanel.Dock="Top"
                 ItemsSource="{Binding LastLanguages}"
-                SelectedItem="{Binding ActiveLanguage}"
-                TextSearch.TextPath="Name">
+                SelectedItem="{Binding ActiveLanguage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                TextSearch.TextPath="Name" IsTabStop="True" TabIndex="1">
                 <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ActivateLastsCommand}" />
+                    </i:EventTrigger>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding SetSlidesLanguageCommand}" />
                     </i:EventTrigger>
@@ -43,9 +81,7 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel>
-                            <TextBlock Text="{Binding Name}" />
-                        </WrapPanel>
+                        <TextBlock Text="{Binding Name}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -53,8 +89,11 @@
                 Margin="0,2,0,0"
                 ItemsSource="{Binding AllLanguages}"
                 SelectedItem="{Binding SelectedLanguage}"
-                TextSearch.TextPath="Name">
+                TextSearch.TextPath="Name" IsTabStop="True" TabIndex="2">
                 <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="GotFocus">
+                        <i:InvokeCommandAction Command="{Binding ActivateAllCommand}" />
+                    </i:EventTrigger>
                     <i:EventTrigger EventName="MouseDoubleClick">
                         <i:InvokeCommandAction Command="{Binding SetSlidesLanguageCommand}" />
                     </i:EventTrigger>
@@ -64,9 +103,7 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel>
-                            <TextBlock Text="{Binding Name}" />
-                        </WrapPanel>
+                        <TextBlock Text="{Binding Name}" />
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
@@ -75,15 +112,17 @@
             Grid.Row="2"
             Grid.Column="0"
             Margin="0,5,5,0"
-            Command="{Binding SetSlidesLanguageCommand}">
+            Command="{Binding SetSlidesLanguageCommand}" TabIndex="3">
             <TextBlock TextAlignment="Center" TextWrapping="Wrap">Set on selected slides</TextBlock>
         </Button>
         <Button
             Grid.Row="2"
             Grid.Column="1"
             Margin="5,5,0,0"
-            Command="{Binding SetPresentationLanguageCommand}">
-            <TextBlock TextAlignment="Center" TextWrapping="Wrap">Set on presentation</TextBlock>
+            Command="{Binding SetPresentationLanguageCommand}" TabIndex="4">
+            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
+                Set on presentation
+            </TextBlock>
         </Button>
     </Grid>
 </UserControl>
