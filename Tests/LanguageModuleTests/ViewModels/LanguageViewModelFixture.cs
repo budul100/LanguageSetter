@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace ___TestApp.Modules.ModuleName.Tests.ViewModels
+namespace LanguageModuleTests.ViewModels
 {
     public class LanguageViewModelFixture
     {
