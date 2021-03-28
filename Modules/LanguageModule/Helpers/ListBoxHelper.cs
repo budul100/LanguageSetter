@@ -1,6 +1,6 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace LanguageModule.Helpers
 {
@@ -36,9 +36,32 @@ namespace LanguageModule.Helpers
 
         #region Private Methods
 
+        private static T GetChildOfType<T>(DependencyObject depObj)
+            where T : DependencyObject
+        {
+            var result = default(T);
+
+            if (depObj != default)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(depObj, i);
+                    result = (child as T) ?? GetChildOfType<T>(child);
+
+                    if (result != default) break;
+                }
+            }
+
+            return result;
+        }
+
         private static void OnAutoSizeItemCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var listBox = d as ListBox;
+
+            // we set this to 0.0 so that we ddon't create any elements
+            // before we have had a chance to modify the scrollviewer
+            listBox.MaxHeight = 0.0;
 
             listBox.AddHandler(
                 routedEvent: ScrollViewer.ScrollChangedEvent,
@@ -47,37 +70,35 @@ namespace LanguageModule.Helpers
             listBox.ItemContainerGenerator.ItemsChanged += (ig, arg) => UpdateSize(listBox);
         }
 
+        private static void OnVirtualizingStackPanelSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var stackPanel = sender as VirtualizingStackPanel;
+
+            var listBox = (ListBox)ItemsControl.GetItemsOwner(stackPanel);
+            var maxCount = GetAutoSizeItemCount(listBox);
+
+            stackPanel.ScrollOwner.MaxHeight = stackPanel.Children.Count == 0
+                ? 1
+                : ((FrameworkElement)stackPanel.Children[0]).ActualHeight * maxCount;
+        }
+
         private static void UpdateSize(ListBox listBox)
         {
-            var generator = listBox.ItemContainerGenerator;
+            var scrollViewer = GetChildOfType<ScrollViewer>(listBox);
 
-            var point = new Point(
-                x: listBox.Padding.Left + 5,
-                y: listBox.Padding.Top + 5);
-
-            if (listBox.InputHitTest(point) is FrameworkElement element
-                && generator != default)
+            if (scrollViewer != default)
             {
-                var item = element.DataContext;
+                // limit the scrollviewer height so that the bare minimum elements are generated
+                scrollViewer.MaxHeight = 1.0;
 
-                if (item != default)
+                var stackPanel = GetChildOfType<VirtualizingStackPanel>(listBox);
+                if (stackPanel != default)
                 {
-                    if (!(generator.ContainerFromItem(item) is FrameworkElement container))
-                    {
-                        container = element;
-                    }
-
-                    var maxCount = GetAutoSizeItemCount(listBox);
-
-                    var newHeight = Math.Min(maxCount, generator.Items.Count) * container.ActualHeight;
-                    newHeight += listBox.Padding.Top + listBox.Padding.Bottom + listBox.BorderThickness.Top + listBox.BorderThickness.Bottom + 2;
-
-                    if (listBox.ActualHeight != newHeight)
-                    {
-                        listBox.Height = newHeight;
-                    }
+                    stackPanel.SizeChanged += OnVirtualizingStackPanelSizeChanged;
                 }
             }
+
+            listBox.MaxHeight = double.PositiveInfinity;
         }
 
         #endregion Private Methods

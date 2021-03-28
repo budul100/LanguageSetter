@@ -144,11 +144,7 @@ namespace LanguageModule.ViewModels
                 size: settings.LastsSize).ToArray();
 
             LastLanguages.Clear();
-
-            foreach (var language in languages)
-            {
-                LastLanguages.Add(language);
-            }
+            LastLanguages.AddRange(languages);
 
             ActiveLanguage = SelectedLanguage;
         }
