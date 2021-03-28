@@ -1,0 +1,1 @@
+"%ProgramFiles(x86)%\LanguageSetter\unins000.exe" /silent
