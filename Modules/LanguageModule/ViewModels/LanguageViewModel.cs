@@ -65,7 +65,7 @@ namespace LanguageModule.ViewModels
 
         public ObservableCollection<Language> LastLanguages { get; } = new ObservableCollection<Language>();
 
-        public int LastLanguagesSize { get; private set; }
+        public int LastLanguagesSize { get; }
 
         public Language SelectedLanguage
         {
