@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>LanguageSetter</AssemblyName>
-    <AssemblyVersion>0.1.0</AssemblyVersion>
+    <AssemblyVersion>0.2.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
