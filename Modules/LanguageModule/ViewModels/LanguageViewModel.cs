@@ -169,7 +169,7 @@ namespace LanguageModule.ViewModels
             LastLanguages.AddRange(languages);
 
             ActiveLanguage = currentLanguage;
-            RaisePropertyChanged(nameof(ActiveLanguage));
+            SelectedLanguage = currentLanguage;
         }
 
         private void SetPresentationLanguage()
