@@ -17,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E2D7A0B6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modules.LanguageModule.Tests", "Tests\Modules.LanguageModule.Tests\Modules.LanguageModule.Tests.csproj", "{2E2B9200-2518-4195-BE56-1A997B49E4D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetterService", "Services\SetterService\SetterService.csproj", "{39770F98-8B95-48E5-88BC-939B55C64581}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{6E3A9CC1-3696-4FC6-B17F-23AC4DB8EA4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,10 @@ Global
 		{2E2B9200-2518-4195-BE56-1A997B49E4D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E2B9200-2518-4195-BE56-1A997B49E4D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E2B9200-2518-4195-BE56-1A997B49E4D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39770F98-8B95-48E5-88BC-939B55C64581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39770F98-8B95-48E5-88BC-939B55C64581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39770F98-8B95-48E5-88BC-939B55C64581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39770F98-8B95-48E5-88BC-939B55C64581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +55,7 @@ Global
 		{27ACBF33-3A5E-4CF2-BC0E-37C6CAAE5414} = {125367D0-9394-477C-9897-ABFB9350DE57}
 		{14C7F684-F5F4-4197-8A0D-D051F9B974A2} = {228BD8A8-CD87-477A-9188-E35CD587B12F}
 		{2E2B9200-2518-4195-BE56-1A997B49E4D5} = {E2D7A0B6-5F92-4948-8348-ABFC60EC2EFF}
+		{39770F98-8B95-48E5-88BC-939B55C64581} = {6E3A9CC1-3696-4FC6-B17F-23AC4DB8EA4A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FCB89249-1835-4480-B088-1FD4028D5404}

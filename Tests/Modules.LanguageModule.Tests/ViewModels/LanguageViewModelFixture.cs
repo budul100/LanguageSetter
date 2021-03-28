@@ -38,7 +38,7 @@ namespace ___TestApp.Modules.ModuleName.Tests.ViewModels
         {
             var vm = new LanguageViewModel(setterMock.Object, settingsMock.Object);
 
-            Assert.PropertyChanged(vm, nameof(vm.ActiveLanguage), () => setterMock.Raise(x => x.OnLanguageUpdateEvent += default, default(EventArgs)));
+            Assert.PropertyChanged(vm, nameof(vm.ActiveLanguage), () => setterMock.Raise(x => x.OnGivenUpdateEvent += default, default(EventArgs)));
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace ___TestApp.Modules.ModuleName.Tests.ViewModels
         {
             var vm = new LanguageViewModel(setterMock.Object, settingsMock.Object);
 
-            Assert.PropertyChanged(vm, nameof(vm.SelectedLanguage), () => setterMock.Raise(x => x.OnLanguageUpdateEvent += default, default(EventArgs)));
+            Assert.PropertyChanged(vm, nameof(vm.SelectedLanguage), () => setterMock.Raise(x => x.OnGivenUpdateEvent += default, default(EventArgs)));
         }
 
         #endregion Public Methods

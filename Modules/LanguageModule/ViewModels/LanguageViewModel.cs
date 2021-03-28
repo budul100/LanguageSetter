@@ -33,7 +33,7 @@ namespace LanguageModule.ViewModels
             this.languageSetter = languageSetter;
             this.settings = settings;
 
-            languageSetter.OnLanguageUpdateEvent += OnLanguageUpdate;
+            languageSetter.OnGivenUpdateEvent += OnLanguageUpdate;
 
             SetSlidesLanguageCommand = new DelegateCommand(SetSlidesLanguage);
             SetPresentationLanguageCommand = new DelegateCommand(SetPresentationLanguage);

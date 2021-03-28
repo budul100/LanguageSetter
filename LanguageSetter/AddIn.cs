@@ -1,10 +1,6 @@
-﻿#pragma warning disable CA1031 // Do not catch general exception types
-
-using Config.Net;
+﻿using Config.Net;
 using LanguageCommons.Interfaces;
-using NetOffice.Exceptions;
 using NetOffice.OfficeApi;
-using NetOffice.OfficeApi.Enums;
 using NetOffice.PowerPointApi;
 using NetOffice.PowerPointApi.Tools;
 using NetOffice.Tools;
@@ -15,9 +11,7 @@ using PrismTaskPanes.Commons.Enums;
 using PrismTaskPanes.DryIoc;
 using PrismTaskPanes.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -42,7 +36,7 @@ namespace LanguageSetter
         ScrollBarVertical = ScrollVisibility.Disabled,
         ScrollBarHorizontal = ScrollVisibility.Disabled)]
     public class AddIn
-        : COMAddin, ITaskPanesReceiver, ILanguageSetter, IDisposable
+        : COMAddin, ITaskPanesReceiver, IDisposable
     {
         #region Private Fields
 
@@ -63,12 +57,6 @@ namespace LanguageSetter
         }
 
         #endregion Public Constructors
-
-        #region Public Events
-
-        public event EventHandler OnLanguageUpdateEvent;
-
-        #endregion Public Events
 
         #region Public Methods
 
@@ -97,45 +85,6 @@ namespace LanguageSetter
         {
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        public IEnumerable<int> GetAppLangIds()
-        {
-            foreach (var msoLanguageId in Enum.GetValues(typeof(MsoLanguageID)))
-            {
-                var languageId = (int)msoLanguageId;
-
-                if (languageId > 0)
-                {
-                    yield return languageId;
-                }
-            }
-        }
-
-        public int GetCurrentLangId()
-        {
-            var result = CultureInfo.InstalledUICulture.LCID;
-
-            var activeWindow = Application.ActiveWindow;
-            var selection = activeWindow.Selection;
-            var slides = selection.SlideRange;
-
-            foreach (var slide in slides)
-            {
-                if (slide.Shapes != default)
-                {
-                    foreach (var shape in slide.Shapes)
-                    {
-                        if (shape.HasTextFrame == MsoTriState.msoTrue)
-                        {
-                            result = (int)shape.TextFrame.TextRange.LanguageID;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            return result;
         }
 
         public bool GetLanguageSetterExists(IRibbonControl control)
@@ -170,76 +119,16 @@ namespace LanguageSetter
 
         public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterInstance<ILanguageSetter>(this);
+            var setter = new LanguageService.Service(Application);
+            setter.OnSelectedUpdateEvent += OnLanguageSelected;
+
+            containerRegistry.RegisterInstance<ILanguageSetter>(setter);
 
             var settingsPath = GetSettingsPath();
             var settings = new ConfigurationBuilder<ILanguageSettings>()
                 .UseJsonFile(settingsPath).Build();
 
             containerRegistry.RegisterInstance(settings);
-        }
-
-        public void SetPresentationLanguage(int languageId)
-        {
-            var activePresentation = Application.ActivePresentation;
-
-            activePresentation.DefaultLanguageID = (MsoLanguageID)languageId;
-
-            var slides = activePresentation.Slides;
-
-            foreach (var slide in slides)
-            {
-                SetSlideLanguage(
-                    slide: slide,
-                    languageId: languageId);
-            }
-
-            SetMasterLanguage(
-                master: activePresentation.SlideMaster,
-                languageId: languageId);
-
-            if (activePresentation.HasTitleMaster == MsoTriState.msoTrue)
-            {
-                SetMasterLanguage(
-                    master: activePresentation.TitleMaster,
-                    languageId: languageId);
-            }
-
-            if (activePresentation.HasNotesMaster)
-            {
-                SetMasterLanguage(
-                    master: activePresentation.NotesMaster,
-                    languageId: languageId);
-            }
-
-            if (activePresentation.HasHandoutMaster)
-            {
-                SetMasterLanguage(
-                    master: activePresentation.HandoutMaster,
-                    languageId: languageId);
-            }
-
-            this.SetTaskPaneVisible(
-                id: TaskPaneId,
-                isVisible: false);
-        }
-
-        public void SetSlidesLanguage(int languageId)
-        {
-            var activeWindow = Application.ActiveWindow;
-            var selection = activeWindow.Selection;
-            var slides = selection.SlideRange;
-
-            foreach (var slide in slides)
-            {
-                SetSlideLanguage(
-                    slide: slide,
-                    languageId: languageId);
-            }
-
-            this.SetTaskPaneVisible(
-                id: TaskPaneId,
-                isVisible: false);
         }
 
         #endregion Public Methods
@@ -276,46 +165,16 @@ namespace LanguageSetter
             return result;
         }
 
-        private static void SetShapeLanguage(NetOffice.PowerPointApi.Shape shape, int languageId)
-        {
-            if (shape.HasTextFrame == MsoTriState.msoTrue)
-            {
-                shape.TextFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
-            }
-
-            if (shape.HasTable == MsoTriState.msoTrue)
-            {
-                var table = shape.Table;
-
-                for (var row = 1; row < table.Rows.Count; row++)
-                {
-                    for (var column = 0; column < table.Columns.Count; column++)
-                    {
-                        var cell = table.Cell(
-                            row: row,
-                            column: column);
-
-                        cell.Shape.TextFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
-                    }
-                }
-            }
-
-            if (shape.Type == MsoShapeType.msoGroup || shape.Type == MsoShapeType.msoSmartArt)
-            {
-                foreach (var groupItem in shape.GroupItems)
-                {
-                    SetShapeLanguage(
-                        shape: groupItem,
-                        languageId: languageId);
-                }
-            }
-        }
-
         private void OnAddInStart(ref Array custom)
         {
-            Application.AfterNewPresentationEvent += OnPresentationNew;
-            Application.AfterPresentationOpenEvent += OnPresentationOpen;
             Application.PresentationCloseEvent += OnPresentationClose;
+        }
+
+        private void OnLanguageSelected(object sender, EventArgs e)
+        {
+            this.SetTaskPaneVisible(
+                id: TaskPaneId,
+                isVisible: false);
         }
 
         private void OnPresentationClose(Presentation pres)
@@ -325,69 +184,6 @@ namespace LanguageSetter
                 isVisible: false);
         }
 
-        private void OnPresentationNew(Presentation pres)
-        {
-            OnLanguageUpdateEvent?.Invoke(
-                sender: this,
-                e: default);
-        }
-
-        private void OnPresentationOpen(Presentation pres)
-        {
-            OnLanguageUpdateEvent?.Invoke(
-                sender: this,
-                e: default);
-        }
-
-        private void SetMasterLanguage(object master, int languageId)
-        {
-            var relevant = master as Master;
-
-            if (relevant != default)
-            {
-                foreach (var relevantShape in relevant.Shapes)
-                {
-                    SetShapeLanguage(
-                        shape: relevantShape,
-                        languageId: languageId);
-                }
-
-                try
-                {
-                    foreach (var customLayout in relevant.CustomLayouts)
-                    {
-                        var relevantLayout = customLayout as CustomLayout;
-
-                        foreach (var relevantShape in relevant.Shapes)
-                        {
-                            SetShapeLanguage(
-                                shape: relevantShape,
-                                languageId: languageId);
-                        }
-                    }
-                }
-                catch (PropertyGetCOMException)
-                { }
-            }
-        }
-
-        private void SetSlideLanguage(object slide, int languageId)
-        {
-            var relevant = slide as Slide;
-
-            if (relevant != default)
-            {
-                foreach (var relevantShape in relevant.Shapes)
-                {
-                    SetShapeLanguage(
-                        shape: relevantShape,
-                        languageId: languageId);
-                }
-            }
-        }
-
         #endregion Private Methods
     }
 }
-
-#pragma warning restore CA1031 // Do not catch general exception types

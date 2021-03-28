@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Modules\LanguageModule\LanguageModule.csproj" />
+    <ProjectReference Include="..\Services\SetterService\SetterService.csproj" />
   </ItemGroup>
 
   <ItemGroup>

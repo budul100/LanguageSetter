@@ -7,7 +7,9 @@ namespace LanguageCommons.Interfaces
     {
         #region Public Events
 
-        event EventHandler OnLanguageUpdateEvent;
+        event EventHandler OnGivenUpdateEvent;
+
+        event EventHandler OnSelectedUpdateEvent;
 
         #endregion Public Events
 
