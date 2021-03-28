@@ -1,5 +1,4 @@
 ﻿using Config.Net;
-using System.Collections.Generic;
 
 namespace LanguageCommons.Interfaces
 {
