@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{228BD8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageCommons", "Commons\LanguageCommons\LanguageCommons.csproj", "{14C7F684-F5F4-4197-8A0D-D051F9B974A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageSetter", "LanguageSetter\LanguageSetter.csproj", "{593EF695-D7F4-43D1-BC38-E9FAAF0EF6E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "Main\Main.csproj", "{593EF695-D7F4-43D1-BC38-E9FAAF0EF6E6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E2D7A0B6-5F92-4948-8348-ABFC60EC2EFF}"
 EndProject
