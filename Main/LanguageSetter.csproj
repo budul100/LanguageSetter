@@ -2,9 +2,11 @@
 
   <PropertyGroup>
     <AssemblyName>LanguageSetter</AssemblyName>
-    <AssemblyVersion>0.2.0</AssemblyVersion>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
+    <Authors>budul</Authors>
+    <Company>budul</Company>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
