@@ -1,3 +1,7 @@
+@echo off
+
+DEL %APPDATA%\LanguageSetter\*.* /q
+
 PUSHD ..
 
 FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
