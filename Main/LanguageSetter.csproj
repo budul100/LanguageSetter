@@ -7,6 +7,7 @@
     <Version>$(AssemblyVersion)</Version>
     <Authors>budul</Authors>
     <Company>budul</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
