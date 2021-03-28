@@ -33,8 +33,8 @@ namespace LanguageSetter
     [CustomUI("RibbonUI.xml", true)]
     [PrismTaskPane(
         id: TaskPaneId,
-        title: "Language",
-        view: typeof(LanguageView.Views.LanguageView),
+        title: "Set Language",
+        view: typeof(LanguageModule.Views.LanguageView),
         regionName: LanguageRegion,
         width: 300,
         visible: false,
@@ -48,7 +48,7 @@ namespace LanguageSetter
 
         private const string AddInName = "LanguageSetter";
         private const string LanguageRegion = "LanguageRegion";
-        private const string SettingsFileName = "Settings.xml";
+        private const string SettingsFileName = "Settings.json";
         private const string TaskPaneId = "LanguageSetter";
 
         private bool isDisposed;
@@ -81,7 +81,7 @@ namespace LanguageSetter
 
         public void ConfigureModuleCatalog(IModuleCatalog moduleCatalog)
         {
-            moduleCatalog.AddModule<LanguageView.Module>(nameof(LanguageView));
+            moduleCatalog.AddModule<LanguageModule.Module>(nameof(LanguageModule));
         }
 
         public override void CTPFactoryAvailable(object CTPFactoryInst)
@@ -173,7 +173,7 @@ namespace LanguageSetter
             containerRegistry.RegisterInstance<ILanguageSetter>(this);
 
             var settingsPath = GetSettingsPath();
-            var settings = new ConfigurationBuilder<ISettings>()
+            var settings = new ConfigurationBuilder<ILanguageSettings>()
                 .UseJsonFile(settingsPath).Build();
 
             containerRegistry.RegisterInstance(settings);

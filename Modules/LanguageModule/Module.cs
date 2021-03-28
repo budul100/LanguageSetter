@@ -2,7 +2,7 @@
 using Prism.Modularity;
 using Prism.Regions;
 
-namespace LanguageView
+namespace LanguageModule
 {
     public class Module
         : IModule

@@ -1,13 +1,13 @@
 ﻿<UserControl
-    x:Class="LanguageView.Views.LanguageView"
+    x:Class="LanguageModule.Views.LanguageView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:h="clr-namespace:LanguageModule.Helpers"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:l="clr-namespace:LanguageView.Helpers"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:prism="http://prismlibrary.com/"
-    xmlns:viewmodels="clr-namespace:LanguageView.ViewModels"
+    xmlns:viewmodels="clr-namespace:LanguageModule.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:LanguageViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="200"
@@ -28,7 +28,7 @@
             LastChildFill="True">
             <ListBox
                 Margin="0,2,0,0"
-                l:ListBoxHelper.AutoSizeItemCount="3"
+                h:ListBoxHelper.AutoSizeItemCount="{Binding LastLanguagesSize}"
                 DockPanel.Dock="Top"
                 ItemsSource="{Binding LastLanguages}"
                 SelectedItem="{Binding ActiveLanguage}"

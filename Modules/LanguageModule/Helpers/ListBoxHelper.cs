@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace LanguageView.Helpers
+namespace LanguageModule.Helpers
 {
     public class ListBoxHelper
         : DependencyObject
@@ -10,8 +10,11 @@ namespace LanguageView.Helpers
         #region Public Fields
 
         // Using a DependencyProperty as the backing store for AutoSizeItemCount.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AutoSizeItemCountProperty = DependencyProperty
-            .RegisterAttached("AutoSizeItemCount", typeof(int), typeof(ListBoxHelper), new PropertyMetadata(0, OnAutoSizeItemCountChanged));
+        public static readonly DependencyProperty AutoSizeItemCountProperty = DependencyProperty.RegisterAttached(
+            name: "AutoSizeItemCount",
+            propertyType: typeof(int),
+            ownerType: typeof(ListBoxHelper),
+            defaultMetadata: new PropertyMetadata(0, OnAutoSizeItemCountChanged));
 
         #endregion Public Fields
 
@@ -46,22 +49,27 @@ namespace LanguageView.Helpers
 
         private static void UpdateSize(ListBox listBox)
         {
-            var gen = listBox.ItemContainerGenerator;
+            var generator = listBox.ItemContainerGenerator;
 
-            if (listBox.InputHitTest(new Point(listBox.Padding.Left + 5, listBox.Padding.Top + 5)) is FrameworkElement element && gen != default)
+            var point = new Point(
+                x: listBox.Padding.Left + 5,
+                y: listBox.Padding.Top + 5);
+
+            if (listBox.InputHitTest(point) is FrameworkElement element
+                && generator != default)
             {
                 var item = element.DataContext;
 
                 if (item != default)
                 {
-                    if (!(gen.ContainerFromItem(item) is FrameworkElement container))
+                    if (!(generator.ContainerFromItem(item) is FrameworkElement container))
                     {
                         container = element;
                     }
 
                     var maxCount = GetAutoSizeItemCount(listBox);
 
-                    var newHeight = Math.Min(maxCount, gen.Items.Count) * container.ActualHeight;
+                    var newHeight = Math.Min(maxCount, generator.Items.Count) * container.ActualHeight;
                     newHeight += listBox.Padding.Top + listBox.Padding.Bottom + listBox.BorderThickness.Top + listBox.BorderThickness.Bottom + 2;
 
                     if (listBox.ActualHeight != newHeight)

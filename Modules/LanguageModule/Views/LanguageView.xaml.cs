@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LanguageView.Views
+namespace LanguageModule.Views
 {
     public partial class LanguageView
         : UserControl

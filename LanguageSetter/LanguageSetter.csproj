@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Views\LanguageView\LanguageView.csproj" />
+    <ProjectReference Include="..\Modules\LanguageModule\LanguageModule.csproj" />
   </ItemGroup>
 
   <ItemGroup>
