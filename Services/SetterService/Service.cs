@@ -160,7 +160,7 @@ namespace LanguageService
 
                 for (var row = 1; row < table.Rows.Count; row++)
                 {
-                    for (var column = 0; column < table.Columns.Count; column++)
+                    for (var column = 1; column < table.Columns.Count; column++)
                     {
                         var cell = table.Cell(
                             row: row,
