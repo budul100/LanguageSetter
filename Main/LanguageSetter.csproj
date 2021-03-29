@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>LanguageSetter</AssemblyName>
-    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>budul</Authors>

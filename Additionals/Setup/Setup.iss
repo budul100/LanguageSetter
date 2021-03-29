@@ -1,7 +1,7 @@
 #include ".\Base.iss"
 
 #define ProgramName "LanguageSetter"
-#define ProgramVersion "1.0.0"
+#define ProgramVersion "1.0.1"
 #define ProgramPublisher "budul"
 
 #define PrismTaskPanesHost "PrismTaskPanes.Host"
