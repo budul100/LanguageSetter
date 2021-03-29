@@ -52,7 +52,7 @@ Name: "{group}\{cm:UninstallProgram,{#ProgramName}}"; Filename: "{uninstallexe}"
 
 [Run]
 Filename: "{dotnet4032}\RegAsm.exe"; Parameters: """{app}\{#ProgramName}.dll"""; WorkingDir: "{app}"; Flags: runhidden; StatusMsg: "Register addin libraries"
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase ""{commoncf32}\{#PrismTaskPanesHost}\{#PrismTaskPanesHost}.dll"""; WorkingDir: "{app}"; Flags: runhidden; StatusMsg: "Register addin libraries"
+Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase ""{commoncf32}\{#PrismTaskPanesHost}\{#PrismTaskPanesHost}.dll"""; WorkingDir: "{commoncf32}\{#PrismTaskPanesHost}"; Flags: runhidden; StatusMsg: "Register addin libraries"
 Filename: "{code:GetPowerpointPath}"; Flags: nowait postinstall skipifsilent unchecked; Description: "{cm:LaunchPowerPoint,PowerPoint}"
 
 [UninstallRun]
