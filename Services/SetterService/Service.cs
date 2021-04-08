@@ -70,7 +70,10 @@ namespace LanguageService
                     {
                         if (shape.HasTextFrame == MsoTriState.msoTrue)
                         {
-                            result = (int)shape.TextFrame.TextRange.LanguageID;
+                            var textFrame = shape.TextFrame;
+                            var textRange = textFrame.TextRange;
+                            result = (int)textRange.LanguageID;
+
                             break;
                         }
                     }
@@ -82,11 +85,11 @@ namespace LanguageService
 
         public void SetPresentationLanguage(int languageId)
         {
-            var activePresentation = application.ActivePresentation;
+            var relevant = application.ActivePresentation;
 
-            activePresentation.DefaultLanguageID = (MsoLanguageID)languageId;
+            relevant.DefaultLanguageID = (MsoLanguageID)languageId;
 
-            var slides = activePresentation.Slides;
+            var slides = relevant.Slides;
 
             foreach (var slide in slides)
             {
@@ -96,27 +99,36 @@ namespace LanguageService
             }
 
             SetMasterLanguage(
-                master: activePresentation.SlideMaster,
+                master: relevant.SlideMaster,
                 languageId: languageId);
 
-            if (activePresentation.HasTitleMaster == MsoTriState.msoTrue)
+            if (relevant.HasTitleMaster == MsoTriState.msoTrue)
             {
                 SetMasterLanguage(
-                    master: activePresentation.TitleMaster,
+                    master: relevant.TitleMaster,
                     languageId: languageId);
             }
 
-            if (activePresentation.HasNotesMaster)
+            if (relevant.HasNotesMaster)
             {
                 SetMasterLanguage(
-                    master: activePresentation.NotesMaster,
+                    master: relevant.NotesMaster,
                     languageId: languageId);
             }
 
-            if (activePresentation.HasHandoutMaster)
+            if (relevant.HasHandoutMaster)
             {
                 SetMasterLanguage(
-                    master: activePresentation.HandoutMaster,
+                    master: relevant.HandoutMaster,
+                    languageId: languageId);
+            }
+
+            var designs = relevant.Designs;
+
+            foreach (var design in designs)
+            {
+                SetDesignLanguage(
+                    design: design,
                     languageId: languageId);
             }
 
@@ -158,15 +170,23 @@ namespace LanguageService
             {
                 var table = shape.Table;
 
-                for (var row = 1; row < table.Rows.Count; row++)
+                var rows = table.Rows;
+
+                for (var rowIndex = 1; rowIndex < rows.Count; rowIndex++)
                 {
-                    for (var column = 1; column < table.Columns.Count; column++)
+                    var columns = table.Columns;
+
+                    for (var columnIndex = 1; columnIndex < columns.Count; columnIndex++)
                     {
                         var cell = table.Cell(
-                            row: row,
-                            column: column);
+                            row: rowIndex,
+                            column: columnIndex);
 
-                        cell.Shape.TextFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
+                        var cellShape = cell.Shape;
+                        var textFrame = cellShape.TextFrame;
+                        var textRange = textFrame.TextRange;
+
+                        textRange.LanguageID = (MsoLanguageID)languageId;
                     }
                 }
             }
@@ -196,16 +216,35 @@ namespace LanguageService
                 e: default);
         }
 
+        private void SetDesignLanguage(object design, int languageId)
+        {
+            var relevant = design as Design;
+
+            if (relevant != default)
+            {
+                SetMasterLanguage(
+                    master: relevant.SlideMaster,
+                    languageId: languageId);
+
+                if (relevant.HasTitleMaster == MsoTriState.msoTrue)
+                {
+                    SetMasterLanguage(
+                        master: relevant.TitleMaster,
+                        languageId: languageId);
+                }
+            }
+        }
+
         private void SetMasterLanguage(object master, int languageId)
         {
             var relevant = master as Master;
 
             if (relevant != default)
             {
-                foreach (var relevantShape in relevant.Shapes)
+                foreach (var shape in relevant.Shapes)
                 {
                     SetShapeLanguage(
-                        shape: relevantShape,
+                        shape: shape,
                         languageId: languageId);
                 }
 
@@ -215,10 +254,10 @@ namespace LanguageService
                     {
                         var relevantLayout = customLayout as CustomLayout;
 
-                        foreach (var relevantShape in relevant.Shapes)
+                        foreach (var shape in relevantLayout.Shapes)
                         {
                             SetShapeLanguage(
-                                shape: relevantShape,
+                                shape: shape,
                                 languageId: languageId);
                         }
                     }
@@ -234,11 +273,23 @@ namespace LanguageService
 
             if (relevant != default)
             {
-                foreach (var relevantShape in relevant.Shapes)
+                foreach (var shape in relevant.Shapes)
                 {
                     SetShapeLanguage(
-                        shape: relevantShape,
+                        shape: shape,
                         languageId: languageId);
+                }
+
+                if (relevant.HasNotesPage == MsoTriState.msoTrue)
+                {
+                    var notesPage = relevant.NotesPage;
+
+                    foreach (var shape in notesPage.Shapes)
+                    {
+                        SetShapeLanguage(
+                            shape: shape,
+                            languageId: languageId);
+                    }
                 }
             }
         }
