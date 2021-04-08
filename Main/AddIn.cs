@@ -21,9 +21,7 @@ namespace LanguageSetter
     [COMAddin(AddInName, "Set spell checker language", LoadBehavior.LoadAtStartup),
         ProgId(AddInName),
         Guid("79d02d3d-162b-492e-a6c1-32dc32d999a2"),
-        RegistryLocation(RegistrySaveLocation.LocalMachine),
-        Codebase,
-        ComVisible(true)]
+        RegistryLocation(RegistrySaveLocation.LocalMachine)]
     [CustomUI("RibbonUI.xml", true)]
     [PrismTaskPane(
         id: TaskPaneId,
@@ -59,6 +57,22 @@ namespace LanguageSetter
         #endregion Public Constructors
 
         #region Public Methods
+
+        [ComRegisterFunction]
+        public static void Register(Type type)
+        {
+            RegisterFunction(type);
+
+            PowerPointProvider.RegisterProvider<AddIn>();
+        }
+
+        [ComUnregisterFunction]
+        public static void Unregister(Type type)
+        {
+            UnregisterFunction(type);
+
+            PowerPointProvider.UnregisterProvider<AddIn>();
+        }
 
         public void ClickLanguageSetterToggle(IRibbonControl control, bool isPressed)
         {

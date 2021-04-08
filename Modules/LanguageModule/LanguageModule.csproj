@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="budul.PrismTaskPanes.Commons" Version="4.3.2" />
+    <PackageReference Include="budul.PrismTaskPanes.Commons" Version="4.4.0" />
     <PackageReference Include="budul.StringExtensions" Version="1.15.0" />
     <PackageReference Include="Prism.DryIoc" Version="8.0.0.1909" />
   </ItemGroup>

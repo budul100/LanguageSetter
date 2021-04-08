@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <AssemblyName>LanguageSetter</AssemblyName>
@@ -12,7 +12,6 @@
     <TargetFramework>net472</TargetFramework>
     <UseWPF>true</UseWPF>
     <EnableComHosting>true</EnableComHosting>
-    <EnableRegFreeCom>true</EnableRegFreeCom>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -29,13 +28,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.3.2" />
+    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.0" />
     <PackageReference Include="Config.Net" Version="4.15.0" />
     <PackageReference Include="Config.Net.Json" Version="4.15.0" />
   </ItemGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)'=='Debug'">
-    <Exec Command="&quot;%25windir%25\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe&quot; /codebase &quot;$(TargetDir)\PrismTaskPanes.Host.dll&quot;" />
-  </Target>
 
 </Project>

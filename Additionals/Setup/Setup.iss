@@ -4,7 +4,6 @@
 #define ProgramVersion "1.0.4"
 #define ProgramPublisher "budul"
 
-#define PrismTaskPanesHost "PrismTaskPanes.Host"
 #define setupPath "..\..\Main\bin\Release\net472"
 
 #define UseDotNet47
@@ -51,13 +50,11 @@ Source: "{#setupPath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Name: "{group}\{cm:UninstallProgram,{#ProgramName}}"; Filename: "{uninstallexe}"
 
 [Run]
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: """{app}\{#ProgramName}.dll"""; WorkingDir: "{app}"; Flags: runhidden; StatusMsg: "Register addin libraries"
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase ""{commoncf32}\{#PrismTaskPanesHost}\{#PrismTaskPanesHost}.dll"""; WorkingDir: "{commoncf32}\{#PrismTaskPanesHost}"; Flags: runhidden; StatusMsg: "Register addin libraries"
+Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/codebase ""{app}\{#ProgramName}.dll"""; WorkingDir: "{app}"; Flags: runhidden; StatusMsg: "Register addin libraries"
 Filename: "{code:GetPowerpointPath}"; Flags: nowait postinstall skipifsilent unchecked; Description: "{cm:LaunchPowerPoint,PowerPoint}"
 
 [UninstallRun]
 Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/unregister ""{app}\{#ProgramName}.dll"""; Flags: runhidden; StatusMsg: "Unregister addin libraries"
-Filename: "{dotnet4032}\RegAsm.exe"; Parameters: "/unregister ""{commoncf32}\{#PrismTaskPanesHost}\{#PrismTaskPanesHost}.dll"""; Flags: runhidden; StatusMsg: "Unregister addin libraries"
 
 [CustomMessages]
 de.LaunchPowerPoint=Starte Microsoft PowerPoint nach der Installation
