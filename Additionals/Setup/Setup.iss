@@ -1,7 +1,7 @@
 #include ".\Base.iss"
 
 #define ProgramName "LanguageSetter"
-#define ProgramVersion "1.0.4"
+#define ProgramVersion "1.0.5"
 #define ProgramPublisher "budul"
 
 #define setupPath "..\..\Main\bin\Release\net472"
@@ -43,7 +43,6 @@ Name: "de"; MessagesFile: "compiler:Languages\German.isl"
 
 [Files]
 Source: "{#setupPath}\{#ProgramName}.dll"; DestDir: "{app}"; Flags: ignoreversion 
-Source: "{#setupPath}\{#PrismTaskPanesHost}.dll"; DestDir: "{commoncf32}\{#PrismTaskPanesHost}"; Flags: ignoreversion sharedfile 
 Source: "{#setupPath}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
