@@ -1,7 +1,7 @@
 #include ".\Base.iss"
 
 #define ProgramName "LanguageSetter"
-#define ProgramVersion "1.0.5"
+#define ProgramVersion "1.0.6"
 #define ProgramPublisher "budul"
 
 #define setupPath "..\..\Main\bin\Release\net472"

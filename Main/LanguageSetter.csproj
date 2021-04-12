@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyName>LanguageSetter</AssemblyName>
-    <AssemblyVersion>1.0.6</AssemblyVersion>
+    <AssemblyVersion>1.0.7</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
     <Authors>budul</Authors>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.0" />
+    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.1" />
     <PackageReference Include="Config.Net" Version="4.15.0" />
     <PackageReference Include="Config.Net.Json" Version="4.15.0" />
   </ItemGroup>
