@@ -1,9 +1,11 @@
 @echo off
 
-SET ProjectPath=.\Main\LanguageSetter.csproj
+SET UpdateScripts=.\Additionals\Scripts
 SET SetupDir=.\Additionals\Setup
 SET SetupPath=%SetupDir%\Setup.iss
 SET SetupScripts=%SetupDir%\Scripts
+
+SET ProjectPath=.\Main\LanguageSetter.csproj
 SET SlnPaths='%ProjectPath%'
 
 SET OutputDir1=.
@@ -13,9 +15,9 @@ echo.
 echo Clean solution
 echo.
 
-for /f "usebackq delims=" %%d in (`"dir /ad/b/s | sort /R"`) do rd "%%d"
-FOR /F "tokens=*" %%G IN ('DIR /B /AD /S bin') DO RMDIR /S /Q "%%G"
-FOR /F "tokens=*" %%G IN ('DIR /B /AD /S obj') DO RMDIR /S /Q "%%G"
+SET BaseDir=%~dp0
+
+powershell "%UpdateScripts%\_CleanFolders.ps1" -baseDir "%CD%"
 
 RMDIR /S /Q "%APPDATA%\LanguageSetter"
 
@@ -78,3 +80,5 @@ echo.
 :EndProcess
 
 pause
+
+start "" https://sourceforge.net/projects/languagesetter/files/
