@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.1" />
+    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.2" />
     <PackageReference Include="Config.Net" Version="4.15.0" />
     <PackageReference Include="Config.Net.Json" Version="4.15.0" />
   </ItemGroup>
