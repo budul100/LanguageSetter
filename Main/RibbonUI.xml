@@ -12,7 +12,7 @@
             size="large"
             label="Set language"
             imageMso="SetLanguage"
-            getEnabled="GetLanguageSetterExists"
+            getEnabled="GetLanguageSetterAvailable"
             getPressed="GetLanguageSetterPressed"
             onAction="ClickLanguageSetterToggle" />
         </group>

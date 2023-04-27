@@ -1,19 +1,20 @@
-﻿#pragma warning disable CA1031 // Do not catch general exception types
-
-using LanguageCommons.Interfaces;
-using NetOffice.Exceptions;
+﻿using LanguageCommons.Interfaces;
 using NetOffice.OfficeApi.Enums;
 using NetOffice.PowerPointApi;
+using SetterService.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
-namespace LanguageService
+namespace SetterService
 {
     public class Service
         : ILanguageSetter
     {
         #region Private Fields
+
+        private const string SlideRangeName = "PowerPoint.SlideRange";
 
         private readonly Application application;
 
@@ -60,21 +61,28 @@ namespace LanguageService
 
             var activeWindow = application.ActiveWindow;
             var selection = activeWindow.Selection;
-            var slides = selection.SlideRange;
 
-            foreach (var slide in slides)
+            var childObjects = selection.ChildObjects;
+            var hasSlides = childObjects.Any(c => c.InstanceFriendlyName == SlideRangeName);
+
+            if (hasSlides)
             {
-                if (slide.Shapes != default)
-                {
-                    foreach (var shape in slide.Shapes)
-                    {
-                        if (shape.HasTextFrame == MsoTriState.msoTrue)
-                        {
-                            var textFrame = shape.TextFrame;
-                            var textRange = textFrame.TextRange;
-                            result = (int)textRange.LanguageID;
+                var slides = selection.SlideRange;
 
-                            break;
+                foreach (var slide in slides)
+                {
+                    if (slide.Shapes != default)
+                    {
+                        foreach (var shape in slide.Shapes)
+                        {
+                            if (shape.HasTextFrame == MsoTriState.msoTrue)
+                            {
+                                var textFrame = shape.TextFrame;
+                                var textRange = textFrame.TextRange;
+                                result = (int)textRange.LanguageID;
+
+                                break;
+                            }
                         }
                     }
                 }
@@ -93,43 +101,31 @@ namespace LanguageService
 
             foreach (var slide in slides)
             {
-                SetSlideLanguage(
-                    slide: slide,
-                    languageId: languageId);
+                slide.SetSlideLanguage(languageId);
             }
 
-            SetMasterLanguage(
-                master: relevant.SlideMaster,
-                languageId: languageId);
+            relevant.SlideMaster.SetMasterLanguage(languageId);
 
             if (relevant.HasTitleMaster == MsoTriState.msoTrue)
             {
-                SetMasterLanguage(
-                    master: relevant.TitleMaster,
-                    languageId: languageId);
+                relevant.TitleMaster.SetMasterLanguage(languageId);
             }
 
             if (relevant.HasNotesMaster)
             {
-                SetMasterLanguage(
-                    master: relevant.NotesMaster,
-                    languageId: languageId);
+                relevant.NotesMaster.SetMasterLanguage(languageId);
             }
 
             if (relevant.HasHandoutMaster)
             {
-                SetMasterLanguage(
-                    master: relevant.HandoutMaster,
-                    languageId: languageId);
+                relevant.HandoutMaster.SetMasterLanguage(languageId);
             }
 
             var designs = relevant.Designs;
 
             foreach (var design in designs)
             {
-                SetDesignLanguage(
-                    design: design,
-                    languageId: languageId);
+                design.SetDesignLanguage(languageId);
             }
 
             OnSelectedUpdateEvent?.Invoke(
@@ -141,66 +137,28 @@ namespace LanguageService
         {
             var activeWindow = application.ActiveWindow;
             var selection = activeWindow.Selection;
-            var slides = selection.SlideRange;
 
-            foreach (var slide in slides)
+            var childObjects = selection.ChildObjects;
+            var hasSlides = childObjects.Any(c => c.InstanceFriendlyName == SlideRangeName);
+
+            if (hasSlides)
             {
-                SetSlideLanguage(
-                    slide: slide,
-                    languageId: languageId);
-            }
+                var slides = selection.SlideRange;
 
-            OnSelectedUpdateEvent?.Invoke(
-                sender: this,
-                e: default);
+                foreach (var slide in slides)
+                {
+                    slide.SetSlideLanguage(languageId);
+                }
+
+                OnSelectedUpdateEvent?.Invoke(
+                    sender: this,
+                    e: default);
+            }
         }
 
         #endregion Public Methods
 
         #region Private Methods
-
-        private static void SetShapeLanguage(Shape shape, int languageId)
-        {
-            if (shape.HasTextFrame == MsoTriState.msoTrue)
-            {
-                shape.TextFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
-            }
-
-            if (shape.HasTable == MsoTriState.msoTrue)
-            {
-                var table = shape.Table;
-
-                var rows = table.Rows;
-
-                for (var rowIndex = 1; rowIndex < rows.Count; rowIndex++)
-                {
-                    var columns = table.Columns;
-
-                    for (var columnIndex = 1; columnIndex < columns.Count; columnIndex++)
-                    {
-                        var cell = table.Cell(
-                            row: rowIndex,
-                            column: columnIndex);
-
-                        var cellShape = cell.Shape;
-                        var textFrame = cellShape.TextFrame;
-                        var textRange = textFrame.TextRange;
-
-                        textRange.LanguageID = (MsoLanguageID)languageId;
-                    }
-                }
-            }
-
-            if (shape.Type == MsoShapeType.msoGroup || shape.Type == MsoShapeType.msoSmartArt)
-            {
-                foreach (var groupItem in shape.GroupItems)
-                {
-                    SetShapeLanguage(
-                        shape: groupItem,
-                        languageId: languageId);
-                }
-            }
-        }
 
         private void OnPresentationNew(Presentation pres)
         {
@@ -216,86 +174,6 @@ namespace LanguageService
                 e: default);
         }
 
-        private void SetDesignLanguage(object design, int languageId)
-        {
-            var relevant = design as Design;
-
-            if (relevant != default)
-            {
-                SetMasterLanguage(
-                    master: relevant.SlideMaster,
-                    languageId: languageId);
-
-                if (relevant.HasTitleMaster == MsoTriState.msoTrue)
-                {
-                    SetMasterLanguage(
-                        master: relevant.TitleMaster,
-                        languageId: languageId);
-                }
-            }
-        }
-
-        private void SetMasterLanguage(object master, int languageId)
-        {
-            var relevant = master as Master;
-
-            if (relevant != default)
-            {
-                foreach (var shape in relevant.Shapes)
-                {
-                    SetShapeLanguage(
-                        shape: shape,
-                        languageId: languageId);
-                }
-
-                try
-                {
-                    foreach (var customLayout in relevant.CustomLayouts)
-                    {
-                        var relevantLayout = customLayout as CustomLayout;
-
-                        foreach (var shape in relevantLayout.Shapes)
-                        {
-                            SetShapeLanguage(
-                                shape: shape,
-                                languageId: languageId);
-                        }
-                    }
-                }
-                catch (PropertyGetCOMException)
-                { }
-            }
-        }
-
-        private void SetSlideLanguage(object slide, int languageId)
-        {
-            var relevant = slide as Slide;
-
-            if (relevant != default)
-            {
-                foreach (var shape in relevant.Shapes)
-                {
-                    SetShapeLanguage(
-                        shape: shape,
-                        languageId: languageId);
-                }
-
-                if (relevant.HasNotesPage == MsoTriState.msoTrue)
-                {
-                    var notesPage = relevant.NotesPage;
-
-                    foreach (var shape in notesPage.Shapes)
-                    {
-                        SetShapeLanguage(
-                            shape: shape,
-                            languageId: languageId);
-                    }
-                }
-            }
-        }
-
         #endregion Private Methods
     }
 }
-
-#pragma warning restore CA1031 // Do not catch general exception types

@@ -17,7 +17,7 @@ namespace LanguageModule.ViewModels
 
         private const int ListSizeMax = 5;
 
-        private readonly LanguageFactory languageFactory = new LanguageFactory();
+        private readonly LanguageFactory languageFactory = new();
         private readonly ILanguageSetter languageSetter;
         private readonly ILanguageSettings settings;
 
@@ -138,11 +138,11 @@ namespace LanguageModule.ViewModels
 
             if (result < 1)
             {
-                result = 1;
+                return 1;
             }
             else if (result > ListSizeMax)
             {
-                result = ListSizeMax;
+                return ListSizeMax;
             }
 
             return result;

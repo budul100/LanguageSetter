@@ -1,36 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-  <PropertyGroup>
-    <AssemblyName>LanguageSetter</AssemblyName>
-    <AssemblyVersion>1.0.7</AssemblyVersion>
-    <FileVersion>$(AssemblyVersion)</FileVersion>
-    <Version>$(AssemblyVersion)</Version>
-    <Authors>budul</Authors>
-    <Company>budul</Company>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <TargetFramework>net472</TargetFramework>
-    <UseWPF>true</UseWPF>
-    <EnableComHosting>true</EnableComHosting>
-  </PropertyGroup>
+	<PropertyGroup>
+		<AssemblyName>LanguageSetter</AssemblyName>
+		<AssemblyVersion>1.1.1</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
+		<Authors>budul</Authors>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<EnableComHosting>true</EnableComHosting>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <RegisterForComInterop>true</RegisterForComInterop>
-  </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Modules\LanguageModule\LanguageModule.csproj" />
+		<ProjectReference Include="..\Services\SetterService\SetterService.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Modules\LanguageModule\LanguageModule.csproj" />
-    <ProjectReference Include="..\Services\SetterService\SetterService.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="RibbonUI.xml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="RibbonUI.xml" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="5.1.1" />
+		<PackageReference Include="Config.Net" Version="5.1.5" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="4.4.2" />
-    <PackageReference Include="Config.Net" Version="4.15.0" />
-    <PackageReference Include="Config.Net.Json" Version="4.15.0" />
-  </ItemGroup>
+	<ItemGroup>
+	  <None Update="PrismTaskPanes.Host.runtimeconfig.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="if $(ConfigurationName)==Debug regsvr32 /s $(TargetDir)$(TargetName).comhost.dll" />
+	</Target>
 
 </Project>

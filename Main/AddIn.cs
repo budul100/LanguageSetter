@@ -8,7 +8,10 @@ using Prism.Ioc;
 using Prism.Modularity;
 using PrismTaskPanes.Attributes;
 using PrismTaskPanes.DryIoc;
+using PrismTaskPanes.DryIoc.PowerPoint;
 using PrismTaskPanes.Enums;
+using PrismTaskPanes.EventArgs;
+using PrismTaskPanes.Extensions;
 using PrismTaskPanes.Interfaces;
 using System;
 using System.Diagnostics;
@@ -21,7 +24,9 @@ namespace LanguageSetter
     [COMAddin(AddInName, "Set spell checker language", LoadBehavior.LoadAtStartup),
         ProgId(AddInName),
         Guid("79d02d3d-162b-492e-a6c1-32dc32d999a2"),
-        RegistryLocation(RegistrySaveLocation.LocalMachine)]
+        RegistryLocation(RegistrySaveLocation.LocalMachine),
+        Codebase,
+        ComVisible(true)]
     [CustomUI("RibbonUI.xml", true)]
     [PrismTaskPane(
         id: TaskPaneId,
@@ -31,8 +36,8 @@ namespace LanguageSetter
         width: 300,
         visible: false,
         invisibleAtStart: true,
-        ScrollBarVertical = ScrollVisibility.Disabled,
-        ScrollBarHorizontal = ScrollVisibility.Disabled)]
+        scrollBarVertical: ScrollVisibility.Disabled,
+        scrollBarHorizontal: ScrollVisibility.Disabled)]
     public class AddIn
         : COMAddin, ITaskPanesReceiver, IDisposable
     {
@@ -44,6 +49,7 @@ namespace LanguageSetter
         private const string TaskPaneId = "LanguageSetter";
 
         private bool isDisposed;
+        private TaskPanesProvider provider;
 
         #endregion Private Fields
 
@@ -62,21 +68,19 @@ namespace LanguageSetter
         public static void Register(Type type)
         {
             RegisterFunction(type);
-
-            PowerPointProvider.RegisterProvider<AddIn>();
+            type.RegisterTaskPaneHost();
         }
 
         [ComUnregisterFunction]
         public static void Unregister(Type type)
         {
             UnregisterFunction(type);
-
-            PowerPointProvider.UnregisterProvider<AddIn>();
+            type.UnregisterTaskPaneHost();
         }
 
         public void ClickLanguageSetterToggle(IRibbonControl control, bool isPressed)
         {
-            this.SetTaskPaneVisible(
+            provider.SetTaskPaneVisibility(
                 id: TaskPaneId,
                 isVisible: isPressed);
         }
@@ -90,9 +94,14 @@ namespace LanguageSetter
         {
             base.CTPFactoryAvailable(CTPFactoryInst);
 
-            this.InitializeProvider(
-                application: Application,
-                ctpFactoryInst: CTPFactoryInst);
+            provider = new TaskPanesProvider(
+                receiver: this,
+                officeApplication: Application,
+                ctpFactoryInst: CTPFactoryInst,
+                showErrorIfAlreadyLoaded: true);
+
+            provider.OnConfigureModuleCatalogEvent += OnConfigureModuleCatalog;
+            provider.OnRegisterTypesEvent += OnRegisterTypes;
         }
 
         public void Dispose()
@@ -101,14 +110,18 @@ namespace LanguageSetter
             GC.SuppressFinalize(this);
         }
 
-        public bool GetLanguageSetterExists(IRibbonControl control)
+        public bool GetLanguageSetterAvailable(IRibbonControl control)
         {
-            return this.TaskPaneExists(TaskPaneId);
+            var result = Application != default
+                && Application.Presentations.Count > 0
+                && Application.ActivePresentation != default;
+
+            return result;
         }
 
         public bool GetLanguageSetterPressed(IRibbonControl control)
         {
-            return this.TaskPaneVisible(TaskPaneId);
+            return provider.TaskPaneIsVisible(TaskPaneId);
         }
 
         public void InvalidateRibbonUI()
@@ -129,20 +142,6 @@ namespace LanguageSetter
             //    exception: exception);
 
             Debugger.Break();
-        }
-
-        public void RegisterTypes(IContainerRegistry containerRegistry)
-        {
-            var setter = new LanguageService.Service(Application);
-            setter.OnSelectedUpdateEvent += OnLanguageSelected;
-
-            containerRegistry.RegisterInstance<ILanguageSetter>(setter);
-
-            var settingsPath = GetSettingsPath();
-            var settings = new ConfigurationBuilder<ILanguageSettings>()
-                .UseJsonFile(settingsPath).Build();
-
-            containerRegistry.RegisterInstance(settings);
         }
 
         #endregion Public Methods
@@ -184,18 +183,37 @@ namespace LanguageSetter
             Application.PresentationCloseEvent += OnPresentationClose;
         }
 
+        private void OnConfigureModuleCatalog(object sender, ProviderEventArgs<IModuleCatalog> e)
+        {
+            e.Content.AddModule<LanguageModule.Module>();
+        }
+
         private void OnLanguageSelected(object sender, EventArgs e)
         {
-            this.SetTaskPaneVisible(
+            provider.SetTaskPaneVisibility(
                 id: TaskPaneId,
                 isVisible: false);
         }
 
         private void OnPresentationClose(Presentation pres)
         {
-            this.SetTaskPaneVisible(
+            provider.SetTaskPaneVisibility(
                 id: TaskPaneId,
                 isVisible: false);
+        }
+
+        private void OnRegisterTypes(object sender, ProviderEventArgs<IContainerRegistry> e)
+        {
+            var setter = new SetterService.Service(Application);
+            setter.OnSelectedUpdateEvent += OnLanguageSelected;
+
+            e.Content.RegisterInstance<ILanguageSetter>(setter);
+
+            var settingsPath = GetSettingsPath();
+            var settings = new ConfigurationBuilder<ILanguageSettings>()
+                .UseJsonFile(settingsPath).Build();
+
+            e.Content.RegisterInstance(settings);
         }
 
         #endregion Private Methods

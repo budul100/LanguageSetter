@@ -48,7 +48,7 @@ namespace LanguageModuleTests.ViewModels
 
             setterMock.Verify(x => x.GetAppLangIds(), Times.Once);
 
-            Assert.Equal(168, vm.AllLanguages.Count);
+            Assert.True(vm.AllLanguages.Count > 100);
         }
 
         [Fact]

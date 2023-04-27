@@ -1,5 +1,11 @@
 @ECHO off
 
-SET AddinDirectory=..\..\Main\bin\Debug\net472
+SET AddinDir=..\..\Main\bin\Debug
 
-"%windir%\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe" /unregister /tlb "%AddinDirectory%\LanguageSetter.dll"
+regsvr32 /u "%AddinDir%\LanguageSetter.comhost.dll"
+regsvr32 /u "%AddinDir%\PrismTaskPanes.Host.comhost.dll"
+
+SET AddinDir=..\..\Main\bin\Release
+
+regsvr32 /u "%AddinDir%\LanguageSetter.comhost.dll"
+regsvr32 /u "%AddinDir%\PrismTaskPanes.Host.comhost.dll"

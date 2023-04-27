@@ -1,4 +1,5 @@
 param (
+	[string] $changeLogPath,
 	[string[]] $projectPaths
 )
 
@@ -31,5 +32,7 @@ foreach ($path in $projectPaths)
 {
 	Set-FileContent -path $path -replace '(?<=<AssemblyVersion>)[^<]+' -replaceWith "$updatedVersion"
 }
+
+Set-FileContent -path $changeLogPath -replace '# Change log' -replaceWith "# Change log`r`n`r`n## Version $updatedVersion`r`n`r`n..."
 
 exit 0
