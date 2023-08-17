@@ -1,7 +1,7 @@
 #include <idp.iss>
 
 #define ProgramName "LanguageSetter"
-#define ProgramVersion "1.1.0"
+#define ProgramVersion "1.1.1"
 #define ProgramPublisher "budul"
 
 #define setupPath "..\..\Main\bin\Release"
