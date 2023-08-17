@@ -82,10 +82,19 @@ namespace SetterService.Extensions
         {
             if (shape.HasTextFrame == MsoTriState.msoTrue)
             {
-                shape.TextFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
-            }
+                var textFrame = shape.TextFrame;
 
-            if (shape.HasTable == MsoTriState.msoTrue)
+                if (textFrame.HasText == MsoTriState.msoTrue)
+                {
+                    try
+                    {
+                        textFrame.TextRange.LanguageID = (MsoLanguageID)languageId;
+                    }
+                    catch
+                    { }
+                }
+            }
+            else if (shape.HasTable == MsoTriState.msoTrue)
             {
                 var table = shape.Table;
 
@@ -102,15 +111,14 @@ namespace SetterService.Extensions
                             column: columnIndex);
 
                         var cellShape = cell.Shape;
-                        var textFrame = cellShape.TextFrame;
-                        var textRange = textFrame.TextRange;
 
-                        textRange.LanguageID = (MsoLanguageID)languageId;
+                        SetShapeLanguage(
+                            shape: cellShape,
+                            languageId: languageId);
                     }
                 }
             }
-
-            if (shape.Type == MsoShapeType.msoGroup || shape.Type == MsoShapeType.msoSmartArt)
+            else if (shape.Type == MsoShapeType.msoGroup || shape.Type == MsoShapeType.msoSmartArt)
             {
                 foreach (var groupItem in shape.GroupItems)
                 {
