@@ -2,11 +2,11 @@
 
 	<PropertyGroup>
 		<AssemblyName>LanguageSetter</AssemblyName>
-		<AssemblyVersion>1.1.2</AssemblyVersion>
+		<AssemblyVersion>1.1.3</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<Authors>budul</Authors>
-		<TargetFramework>net6.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows</TargetFramework>
 		<EnableComHosting>true</EnableComHosting>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
@@ -21,8 +21,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="5.3.0" />
-		<PackageReference Include="Config.Net" Version="5.1.5" />
+		<PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="5.3.1" />
+		<PackageReference Include="Config.Net" Version="5.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>

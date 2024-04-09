@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0</TargetFrameworks>
+		<TargetFrameworks>net8.0-windows</TargetFrameworks>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.3" />
+		<PackageReference Include="NetOfficeFw.PowerPoint" Version="1.9.5" />
 	</ItemGroup>
 
 	<ItemGroup>
