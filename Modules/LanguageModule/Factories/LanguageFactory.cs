@@ -1,8 +1,8 @@
-﻿using LanguageCommons.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using LanguageCommons.Models;
 
 namespace LanguageModule.Factories
 {
@@ -10,9 +10,8 @@ namespace LanguageModule.Factories
     {
         #region Private Fields
 
-        private readonly static IEnumerable<CultureInfo> cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-
-        private readonly IDictionary<int, Language> languages = new Dictionary<int, Language>();
+        private static readonly IEnumerable<CultureInfo> cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+        private readonly Dictionary<int, Language> languages = [];
 
         #endregion Private Fields
 
@@ -68,7 +67,7 @@ namespace LanguageModule.Factories
             if (!languages.ContainsKey(languageId))
             {
                 var culture = cultures
-                    .Where(c => c.LCID == languageId).SingleOrDefault();
+                    .SingleOrDefault(c => c.LCID == languageId);
 
                 if (culture != default)
                 {
@@ -84,8 +83,10 @@ namespace LanguageModule.Factories
                 }
             }
 
-            return languages.ContainsKey(languageId)
-                ? languages[languageId]
+            return languages.TryGetValue(
+                key: languageId,
+                value: out var value)
+                ? value
                 : default;
         }
 

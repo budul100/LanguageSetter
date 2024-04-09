@@ -1,4 +1,9 @@
-﻿using Config.Net;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using Config.Net;
 using LanguageCommons.Interfaces;
 using NetOffice.OfficeApi;
 using NetOffice.PowerPointApi;
@@ -13,11 +18,6 @@ using PrismTaskPanes.Enums;
 using PrismTaskPanes.EventArgs;
 using PrismTaskPanes.Extensions;
 using PrismTaskPanes.Interfaces;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace LanguageSetter
 {
@@ -112,8 +112,7 @@ namespace LanguageSetter
 
         public bool GetLanguageSetterAvailable(IRibbonControl control)
         {
-            var result = Application != default
-                && Application.Presentations.Count > 0
+            var result = Application?.Presentations.Count > 0
                 && Application.ActivePresentation != default;
 
             return result;

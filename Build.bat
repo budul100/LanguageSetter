@@ -9,7 +9,7 @@ SET ProjectPath=.\Main\LanguageSetter.csproj
 SET SlnPaths='%ProjectPath%'
 
 SET OutputDir1=.
-SET OutputDir2=.
+REM SET OutputDir2=.
 
 echo.
 echo Clean solution
@@ -67,7 +67,7 @@ echo Deploy setup file
 echo.
 
 copy /y ".\LanguageSetter_Setup.exe" "%OutputDir1%"
-copy /y ".\LanguageSetter_Setup.exe" "%OutputDir2%"
+REM copy /y ".\LanguageSetter_Setup.exe" "%OutputDir2%"
 
 powershell "%SetupScripts%\Update_VersionBuild.ps1 -projectPaths %SlnPaths%"
 
@@ -79,6 +79,8 @@ echo.
 
 :EndProcess
 
-pause
-
+start "" https://github.com/budul100/LanguageSetter/releases
 start "" https://sourceforge.net/projects/languagesetter/files/
+
+echo.
+pause

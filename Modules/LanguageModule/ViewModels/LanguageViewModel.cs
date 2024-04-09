@@ -1,12 +1,12 @@
-﻿using LanguageCommons.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using LanguageCommons.Interfaces;
 using LanguageCommons.Models;
 using LanguageModule.Factories;
 using Prism.Commands;
 using Prism.Regions;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace LanguageModule.ViewModels
 {
@@ -69,9 +69,9 @@ namespace LanguageModule.ViewModels
             }
         }
 
-        public ObservableCollection<Language> AllLanguages { get; } = new ObservableCollection<Language>();
+        public ObservableCollection<Language> AllLanguages { get; } = [];
 
-        public ObservableCollection<Language> LastLanguages { get; } = new ObservableCollection<Language>();
+        public ObservableCollection<Language> LastLanguages { get; } = [];
 
         public int LastLanguagesSize { get; }
 
@@ -116,7 +116,7 @@ namespace LanguageModule.ViewModels
         {
             yield return currentLanguage.Id.ToString();
 
-            if (settings.LastLanguages?.Any() ?? false)
+            if (settings.LastLanguages?.Length > 0)
             {
                 var listInd = 1;
                 foreach (var language in settings.LastLanguages)

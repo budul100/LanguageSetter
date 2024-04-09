@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<AssemblyName>LanguageSetter</AssemblyName>
-		<AssemblyVersion>1.1.3</AssemblyVersion>
+		<AssemblyVersion>1.2.1</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
 		<Authors>budul</Authors>
@@ -21,18 +21,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="5.3.1" />
+		<PackageReference Include="budul.PrismTaskPanes.View" Version="5.4.1" />
+		<PackageReference Include="budul.PrismTaskPanes.DryIoc.PowerPoint" Version="5.4.1" />
 		<PackageReference Include="Config.Net" Version="5.2.0" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Update="PrismTaskPanes.Host.runtimeconfig.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
-
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="if $(ConfigurationName)==Debug regsvr32 /s $(TargetDir)$(TargetName).comhost.dll" />
+		<Exec Command="if $(ConfigurationName)==Debug regsvr32 $(ProjectDir)$(OutDir)PrismTaskPanes.Host.comhost.dll" />
+		<Exec Command="if $(ConfigurationName)==Debug regsvr32 $(ProjectDir)$(OutDir)LanguageSetter.comhost.dll" />
 	</Target>
 
 </Project>

@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="budul.PrismTaskPanes.Commons" Version="4.4.2" />
 	<PackageReference Include="Prism.DryIoc" Version="8.1.97" />
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
 	<PackageReference Include="Moq" Version="4.20.70" />
