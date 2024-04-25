@@ -8,7 +8,7 @@
 #define PTPHostName "PrismTaskPanes.Host"
 
 ; requires netcorecheck.exe and netcorecheck_x64.exe (see CodeDependencies.iss)
-#define public Dependency_Path_NetCoreCheck "dependencies\"
+#define public Dependency_Path_NetCoreCheck "Dependencies\"
 #include "CodeDependencies.iss"
 
 [Setup]
